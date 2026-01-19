@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diccionario Griego NT</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111111">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #111;
+  color: #eee;
+}
+
+/* CABECERA */
+header {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+}
+
+header input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  background: #000;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 4px;
+}
+
+/* LISTA */
+#lista {
+  padding: 0;
+}
+
+.item {
+  padding: 14px 12px;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: #1a1a1a;
+}
+
+.griego {
+  font-size: 1.4rem;
+}
+
+.translit {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+/* FICHA */
+#ficha {
+  display: none;
+  padding: 16px;
+}
+
+.ficha-griego {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.ficha-translit {
+  color: #aaa;
+  margin-bottom: 12px;
+}
+
+.seccion {
+  margin-bottom: 16px;
+}
+
+.seccion h3 {
+  font-size: 0.9rem;
+  color: #ccc;
+  border-bottom: 1px solid #333;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+}
+
+.boton {
+  margin-bottom: 12px;
+  color: #8ab4f8;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <input id="busqueda" type="text" placeholder="Buscar…">
+</header>
+
+<div id="lista"></div>
+
+<div id="ficha">
+  <div class="boton" onclick="cerrarFicha()">← Volver</div>
+
+  <div class="ficha-griego" id="fichaGriego"></div>
+  <div class="ficha-translit" id="fichaTranslit"></div>
+
+  <div class="seccion">
+    <h3>Traducción</h3>
+    <div id="fichaTraduccion"></div>
+  </div>
+
+  <div class="seccion">
+    <h3>Sentido en el siglo I</h3>
+    <div id="fichaSentido"></div>
+  </div>
+
+  <div class="seccion">
+    <h3>Concordancia</h3>
+    <div id="fichaConcordancia"></div>
+  </div>
+</div>
+
+<script>
+const LISTA = document.getElementById("lista");
+const BUSQUEDA = document.getElementById("busqueda");
+const FICHA = document.getElementById("ficha");
+
+let datos = [];
+
+/* CARGA JSON */
+fetch("datos.json")
+  .then(r => r.json())
+  .then(json => {
+    datos = json.sort((a, b) =>
+      a.transliteracion.localeCompare(b.transliteracion)
+    );
+    renderLista(datos);
+  });
+
+/* RENDER LISTA */
+function renderLista(array) {
+  LISTA.innerHTML = "";
+  array.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div class="griego">${p.griego}</div>
+      <div class="translit">${p.transliteracion}</div>
+    `;
+    div.onclick = () => abrirFicha(p);
+    LISTA.appendChild(div);
+  });
+}
+
+/* BUSQUEDA */
+BUSQUEDA.addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  const filtrado = datos.filter(p =>
+    p.griego.includes(q) ||
+    p.transliteracion.toLowerCase().includes(q) ||
+    p.traducciones.toLowerCase().includes(q)
+  );
+  renderLista(filtrado);
+});
+
+/* FICHA */
+function abrirFicha(p) {
+  LISTA.style.display = "none";
+  FICHA.style.display = "block";
+
+  document.getElementById("fichaGriego").textContent = p.griego;
+  document.getElementById("fichaTranslit").textContent = p.transliteracion;
+  document.getElementById("fichaTraduccion").textContent = p.traducciones;
+  document.getElementById("fichaSentido").textContent = p.sentido_siglo_I;
+  document.getElementById("fichaConcordancia").innerHTML =
+    p.concordancia.split(";").map(c => `<div>${c.trim()}</div>`).join("");
+}
+
+function cerrarFicha() {
+  FICHA.style.display = "none";
+  LISTA.style.display = "block";
+}
+
+/* SERVICE WORKER */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+
+</body>
+</html>
