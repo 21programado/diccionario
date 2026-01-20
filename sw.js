@@ -1,4 +1,4 @@
-const CACHE = "diccionario-griego-core-v1";
+const CACHE = "diccionario-griego-core";
 
 const CORE = [
   "./",
@@ -18,28 +18,28 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
-  const url = event.request.url;
+  const request = event.request;
 
-  // 👉 El JSON SIEMPRE intenta red primero
-  if (url.endsWith("datos.json")) {
+  // 👉 CUALQUIER archivo JSON: network first
+  if (request.url.includes(".json")) {
     event.respondWith(
-      fetch(event.request)
+      fetch(request)
         .then(response => {
           const copia = response.clone();
           caches.open(CACHE).then(cache => {
-            cache.put(event.request, copia);
+            cache.put(request, copia);
           });
           return response;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => caches.match(request))
     );
     return;
   }
 
-  // 👉 Todo lo demás: cache first
+  // 👉 resto: cache first
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+    caches.match(request).then(response => {
+      return response || fetch(request);
     })
   );
 });
