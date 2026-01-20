@@ -60,11 +60,6 @@ header input {
   color: #aaa;
 }
 
-.traduc {
-  font-size: 0.9rem;
-  color: red;
-}
-
 /* FICHA */
 #ficha {
   display: none;
@@ -79,11 +74,6 @@ header input {
 .ficha-translit {
   color: #aaa;
   margin-bottom: 12px;
-}
-
-.ficha-traduc {
-  color: red;
-  margin-bottom: 20px;
 }
 
 .seccion {
@@ -120,7 +110,6 @@ header input {
 
   <div class="ficha-griego" id="fichaGriego"></div>
   <div class="ficha-translit" id="fichaTranslit"></div>
-  <div class="ficha-traduc" id="fichaTraduc"></div>
 
   <div class="seccion">
     <h3>Traducción</h3>
@@ -149,8 +138,8 @@ let datos = [];
 fetch("datos.json")
   .then(r => r.json())
   .then(json => {
-    datos = json.sort((a, b, c) =>
-      a.transliteracion.localeCompare(b.transliteracion).localeCompare(c.traducciones)
+    datos = json.sort((a, b) =>
+      a.transliteracion.localeCompare(b.transliteracion)
     );
     renderLista(datos);
   });
@@ -164,7 +153,6 @@ function renderLista(array) {
     div.innerHTML = `
       <div class="griego">${p.griego}</div>
       <div class="translit">${p.transliteracion}</div>
-      <div class="traduc">${p.tranducciones}</div>
     `;
     div.onclick = () => abrirFicha(p);
     LISTA.appendChild(div);
@@ -208,7 +196,3 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
-
-
-
-
