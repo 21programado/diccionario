@@ -60,6 +60,13 @@ header input {
   color: #aaa;
 }
 
+.traducciones {
+  font-size: 0.85rem;
+  color: #7f8c8d; /* gris verdoso discreto */
+  margin-top: 2px;
+}
+
+
 /* FICHA */
 #ficha {
   display: none;
@@ -153,6 +160,7 @@ function renderLista(array) {
     div.innerHTML = `
       <div class="griego">${p.griego}</div>
       <div class="translit">${p.transliteracion}</div>
+      <div class="traducciones">${p.traducciones}</div>
     `;
     div.onclick = () => abrirFicha(p);
     LISTA.appendChild(div);
@@ -196,3 +204,4 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
