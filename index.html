@@ -76,6 +76,11 @@ header input {
   margin-bottom: 12px;
 }
 
+.ficha-traduc {
+  color: red;
+  margin-bottom: 20px;
+}
+
 .seccion {
   margin-bottom: 16px;
 }
@@ -153,6 +158,7 @@ function renderLista(array) {
     div.innerHTML = `
       <div class="griego">${p.griego}</div>
       <div class="translit">${p.transliteracion}</div>
+      <div class="traduc">${p.tranducciones}</div>
     `;
     div.onclick = () => abrirFicha(p);
     LISTA.appendChild(div);
@@ -196,3 +202,4 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
