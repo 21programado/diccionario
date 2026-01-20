@@ -149,8 +149,8 @@ let datos = [];
 fetch("datos.json")
   .then(r => r.json())
   .then(json => {
-    datos = json.sort((a, b) =>
-      a.transliteracion.localeCompare(b.transliteracion)
+    datos = json.sort((a, b, c) =>
+      a.transliteracion.localeCompare(b.transliteracion).localeCompare(c.traducciones)
     );
     renderLista(datos);
   });
@@ -208,6 +208,7 @@ if ("serviceWorker" in navigator) {
 
 </body>
 </html>
+
 
 
 
