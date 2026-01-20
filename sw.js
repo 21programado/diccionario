@@ -1,4 +1,4 @@
-const CACHE = "diccionario-griego-v1";
+const CACHE = "diccionario-griego-v2";
 
 const ARCHIVOS = [
   "./",
@@ -22,3 +22,4 @@ self.addEventListener("fetch", e => {
     )
   );
 });
+
